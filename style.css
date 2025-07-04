@@ -1,0 +1,1668 @@
+/*
+ Theme Name: My Custom Theme
+ Author: Nikita
+ Version: 2.9
+ Description: Основные стили + Личный кабинет + исправления для «Заказы»
+--------------------------------------------------------------
+*/
+
+/* ===== 0. CSS-переменные ===== */
+:root {
+  --color-primary: #21403C;
+  --color-primary-hover: #1b342f;
+  --color-accent: #0073aa;
+  --color-text-muted: #666;
+  --color-border: #e6e6e6;
+}
+
+/* ===== 1. Reset & base ===== */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+  background: #f0f0f0;
+  color: #000;
+}
+img { max-width: 100%; height: auto; display: block; }
+
+/* ===== 2. Containers ===== */
+.page-wrapper,
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+  background: #fff;
+}
+
+/* ===== 3. Breadcrumbs ===== */
+.breadcrumbs {
+  padding: 12px 15px;
+  font-size: 14px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+.breadcrumbs a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+.breadcrumbs a:hover { text-decoration: underline; }
+
+/* ===== 4. Header / top-bar ===== */
+.site-header {
+  background: #fff;
+  border-bottom: 1px solid #ccc;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 15px;
+}
+.logo img {
+  max-width: 160px;
+}
+.main-nav {
+  display: flex;
+  gap: 20px;
+}
+.main-nav a {
+  font-size: 16px;
+  color: #000;
+  text-decoration: none;
+}
+.main-nav a:hover {
+  color: #1a2f2e;
+}
+
+/* Иконки в шапке */
+.header-icons {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.header-icons img {
+  width: 32px;
+  height: auto;
+}
+
+/* Бургер-меню «Продукты» */
+.burger-products {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.burger-products .line {
+  width: 28px;
+  height: 3px;
+  background: #000;
+}
+.burger-products .btn-text {
+  font-size: 15px;
+  color: #000;
+}
+
+/* Адаптив для Header */
+@media (max-width: 768px) {
+  .header-inner {
+    flex-wrap: wrap;
+  }
+  .main-nav {
+    display: none;
+  }
+}
+
+/* ===== 5. Hero ===== */
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+}
+.hero-block {
+  flex: 1 1 50%;
+  min-height: 400px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.hero-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  background: rgba(0,0,0,.4);
+  color: #fff;
+}
+.hero-content h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+/* ===== 6. Carousel sections (Hot / New / Viewed) ===== */
+.carousel-section {
+  margin: 40px 0;
+}
+.carousel-section h2 {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 600;
+}
+.carousel-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 0 15px;
+}
+.carousel-item {
+  flex: 1 1 calc(25% - 20px);
+  background: #f5f5f5;
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.carousel-item h3 { margin: 8px 0 4px; font-size: 16px; }
+.carousel-item .price {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* ===== 7. Questions (две колонки) ===== */
+.questions {
+  background-color: var(--color-primary);
+  padding: 60px 20px;
+  color: #fff;
+}
+.questions-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.questions-text h2 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+.questions-text p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+.questions-button {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #fff;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  border-radius: 4px;
+  transition: background-color .2s;
+}
+.questions-button:hover { background-color: #e0e0e0; }
+
+/* ===== 8. Brands carousel ===== */
+.brands-carousel {
+  padding: 40px 0;
+  text-align: center;
+  background: #fff;
+}
+.brands-carousel h2 { font-size: 24px; margin-bottom: 24px; }
+.brands-carousel .carousel-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  padding: 0 15px;
+}
+.brand-item img {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* ===== 9. Auth (login / register) ===== */
+.auth-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  padding: 60px 20px;
+}
+.auth-image img {
+  max-width: 500px;
+  border-radius: 8px;
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+.auth-form {
+  flex: 1 1 400px;
+}
+.auth-form h2 { font-size: 32px; margin-bottom: 20px; }
+.auth-form .form-row { display: flex; gap: 20px; }
+.auth-form .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+.auth-form label { margin-bottom: 5px; font-weight: 500; }
+.auth-form input,
+.auth-form select,
+.auth-form textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.auth-form button {
+  width: 100%;
+  padding: 14px;
+  font-size: 18px;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background .2s;
+}
+.auth-form button:hover { background: var(--color-primary-hover); }
+.auth-switch { margin-top: 15px; font-size: 14px; }
+.auth-switch a {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* ===== 10. ACCOUNT AREA ===== */
+.account-wrapper { display: flex; }
+.account-sidebar {
+  width: 220px;
+  min-height: 100%;
+  border-right: 1px solid #eee;
+  background: #fafafa;
+  padding: 25px 20px;
+  position: sticky;
+  top: 0;
+}
+.account-profile {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.account-profile .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+}
+.account-name { font-weight: 600; }
+.account-mail {
+  font-size: 14px;
+  color: var(--color-text-muted);
+}
+.account-menu ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.account-menu li.is-active a,
+.account-menu a:hover {
+  background: var(--color-primary);
+  color: #fff;
+}
+.account-menu a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  color: #000;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 15px;
+}
+.account-menu li.logout a { color: #c00; }
+.account-content {
+  flex: 1;
+  padding: 40px 30px;
+  overflow-x: auto;
+}
+
+/* ===== 11. Dashboard cards, Subscriptions, Ads ===== */
+/* (dash-cards, subs-cards, ads-list, etc.) */
+/* …оставляем без изменений… */
+
+/* ===== 12. Personal form ===== */
+.personal-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+.personal-form .full { grid-column: 1 / -1; }
+.personal-form label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #333;
+}
+.personal-form input,
+.personal-form select,
+.personal-form textarea {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fff;
+  transition: border-color .2s;
+}
+.personal-form input:focus,
+.personal-form textarea:focus {
+  border-color: var(--color-primary);
+  outline: none;
+}
+.personal-form button.btn.full {
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s;
+  margin-top: 10px;
+}
+.personal-form button.btn.full:hover {
+  background: var(--color-primary-hover);
+}
+
+/* ===== 13. Cart grid ===== */
+.cart-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+.cart-card {
+  border: 1px solid #eee;
+  border-radius: 6px;
+  overflow: hidden;
+  text-align: center;
+}
+.cart-card img { height: 140px; object-fit: cover; }
+.cart-card .title { font-weight: 600; padding: 8px; }
+.cart-card .price {
+  font-size: 14px;
+  color: #555;
+  padding-bottom: 8px;
+}
+.cart-checkout {
+  display: flex;
+  justify-content: flex-end;
+  margin: 20px 0;
+}
+.cart-checkout .btn-primary {
+  background: var(--color-primary);
+  color: #fff;
+}
+
+/* ===== 14. Footer ===== */
+.site-footer {
+  background: #21403C;
+  color: #fff;
+  padding: 60px 0 20px;
+}
+/* Убираем белый фон контейнера внутри футера */
+.site-footer .container,
+.site-footer .footer-inner {
+  background: transparent;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+.footer-column {
+  flex: 1 1 250px;
+}
+
+/* Ссылки */
+.footer-links ul {
+  list-style: none;
+}
+.footer-links li {
+  margin-bottom: 12px;
+}
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 16px;
+}
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+/* Социальные иконки */
+.footer-socials {
+  display: flex;
+  gap: 20px;
+}
+.footer-socials img {
+  width: 36px;
+}
+
+/* Подписка */
+.footer-subscribe h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.footer-subscribe p {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.footer-subscribe form {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.footer-subscribe input {
+  flex: 1 1 200px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+.footer-subscribe button {
+  padding: 10px 24px;
+  font-size: 16px;
+  background: #000;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.footer-subscribe button:hover {
+  background: #333;
+}
+
+/* Нижняя полоска */
+.footer-bottom {
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,.3);
+  padding-top: 20px;
+  font-size: 14px;
+}
+
+/* Адаптив для Footer */
+@media (max-width: 768px) {
+  .footer-columns {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .footer-subscribe form {
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-subscribe input,
+  .footer-subscribe button {
+    width: 100%;
+  }
+}
+
+/* ===== 15. Adaptive & misc ===== */
+@media (max-width: 768px) {
+  .hero-block, .questions-inner, .auth-container,
+  .carousel-container, .page-wrapper,
+  .checkout-fields, .order-review {
+    flex: 1 1 100%;
+  }
+}
+@media (max-width: 640px) {
+  /* ЛК → Заказы: карточный вид */
+  .account-orders-table thead { display: none; }
+  .account-orders-table tbody td {
+    display: block;
+    padding: .5rem .75rem;
+  }
+  .account-orders-table tbody tr.order-row {
+    border-left: none;
+  }
+}
+
+/* ===== 16. Orders accordion (clean & fixed) ===== */
+
+.order-toggle {
+  background-color: var(--color-primary);
+  color: #fff;
+  border: none;
+  border-radius: .25rem;
+  padding: .5em 1em;
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  display: inline-block;
+  text-align: center;
+}
+.order-toggle:hover {
+  background-color: var(--color-primary-hover);
+}
+.order-number {
+  color: var(--color-text-muted);
+  font-weight: 500;
+  text-decoration: none;
+}
+.details-box {
+  overflow: hidden;
+  padding: 0;
+  background: #f9f9fb;
+  transition: padding .4s ease, box-shadow .4s ease;
+}
+.order-row.is-open + .order-details-row .details-box {
+  padding: 1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.order-items-table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+.order-items-table th,
+.order-items-table td {
+  padding: .5rem .25rem;
+  border-bottom: 1px solid #e6e6e6;
+  font-size: .95rem;
+}
+.order-items-table th { font-weight: 500; }
+.order-meta p {
+  margin: .25rem 0;
+  font-size: .9rem;
+}
+.order-addresses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+.order-addresses > div {
+  flex: 1 1 220px;
+  font-size: .9rem;
+}
+.order-addresses h4 {
+  margin: 0 0 .25rem;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.account-orders-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 12px;
+}
+.account-orders-table thead th {
+  font-weight: 500;
+  text-align: left;
+  padding: .5rem 1rem;
+  border-bottom: 2px solid var(--color-border);
+}
+.account-orders-table tbody tr.order-row {
+  background: #fff;
+  box-shadow: 0 0 6px rgba(0,0,0,0.05);
+}
+.account-orders-table tbody tr.order-row td {
+  padding: .75rem 1rem;
+  border-top: 1px solid var(--color-border);
+}
+.account-orders-table tbody tr.order-row.is-open {
+  border-left: 3px solid var(--color-accent);
+}
+.status-cell {
+  font-weight: 600;
+}
+/* раз уж скрипт вешает is-open на саму строку-детали */
+.order-details-row.is-open {
+  display: table-row;
+}
+/* кнопка «Удалить» — тот же стиль, что и «Подробнее» */
+.order-delete {
+  background-color: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: .25rem;
+  padding: .5em 1em;
+  font-size: .875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  display: inline-block;
+  text-align: center;
+  margin-top: 1em;
+}
+.order-delete:hover {
+  background-color: #005f8d; /* чуть темнее, чем var(--color-accent) */
+}
+
+/* ===== Favourites (wishlist) ===== */
+.carousel-item,        /* чтобы было relative */
+.product-card { position: relative; }
+
+/* ===== Favorite toggle ===== */
+.item-thumbnail { position: relative; }
+
+.favorite-toggle {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 9999;       /* поверх стрелок и всего остального */
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  opacity: .85;
+  transition: opacity .2s;
+  pointer-events: auto; /* включаем клики */
+}
+.favorite-toggle:hover {
+  opacity: 1;
+}
+.favorite-toggle .icon-heart::before {
+  content: "♡";
+  font-size: 24px;
+  color: #666;
+}
+.favorite-toggle.is-favorited .icon-heart::before {
+  content: "♥";
+  color: crimson;
+}
+/* ===== Favorites grid ===== */
+.favorites-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  gap:20px;
+}
+.fav-card{
+  position:relative;
+  background:#fff;
+  border:1px solid #eee;
+  border-radius:6px;
+  overflow:hidden;
+  text-align:center;
+  transition:box-shadow .2s;
+}
+.fav-card:hover{
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.fav-card img{
+  width:100%;
+  height:160px;
+  object-fit:cover;
+}
+.fav-card .product-title{
+  font-size:15px;
+  font-weight:600;
+  margin:8px 0 4px;
+}
+.fav-card .price{
+  font-size:14px;
+  color:#555;
+  margin-bottom:10px;
+}
+
+/* кнопка ♥ уже есть в глобальных правилах .favorite-toggle */
+.ads-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:20px}
+.ads-card{border:1px solid #eee;border-radius:6px;padding:8px;text-align:center;background:#fff}
+.ads-card img{width:100%;height:140px;object-fit:cover}
+.ads-title{font-size:16px;font-weight:600;margin:6px 0 4px}
+.ads-price{font-size:14px;color:#555}
+.ads-actions .btn{margin-top:6px}
+/* ===== Ads grid ===== */
+.ads-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:24px;
+}
+.ads-card{
+  background:#fff;
+  border:1px solid #e6e6e6;
+  border-radius:6px;
+  overflow:hidden;
+  text-align:center;
+  transition:box-shadow .2s;
+}
+.ads-card:hover{box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.ads-thumb img{
+  width:100%;height:160px;object-fit:cover;display:block;
+}
+.ads-title{font-size:16px;font-weight:600;margin:10px 0 4px;}
+.ads-price{font-size:14px;color:#555;}
+.ads-status{
+  display:inline-block;
+  font-size:12px;
+  background:#f1f1f1;
+  padding:2px 6px;
+  border-radius:4px;
+  margin-top:4px;
+}
+.status-pending{background:#ffebcc;}
+.status-draft{background:#eee;}
+.status-publish{background:#dff4d8;}
+.ads-edit{margin-top:8px;display:inline-block;}
+.ads-pagination{margin-top:30px;text-align:center;}
+.ads-pagination .page-numbers{
+  display:inline-block;margin:0 4px;padding:6px 10px;
+  border:1px solid #ccc;border-radius:4px;
+}
+.ads-pagination .current,
+.ads-pagination .page-numbers:hover{
+  background:#21403c;color:#fff;border-color:#21403c;
+}
+/* ===== 16. Orders accordion clean ===== */
+
+/* строка деталей всегда видима как <tr> */
+.order-details-row {
+  display: table-row !important;
+}
+
+/* скрываем сам контейнер с деталями */
+.order-details-row .details-box {
+  display: none;
+  padding: 0;
+  background: #f9f9fb;
+  transition: padding .4s ease, box-shadow .4s ease;
+}
+
+/* показываем контейнер с деталями, когда предыдущая строка открыта */
+.order-row.is-open + .order-details-row .details-box {
+  display: block;
+  padding: 1em;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.order-status-select{padding:4px;}
+/* скрываем детальную секцию внутри строки */
+.order-details-row .details-box {
+  display: none;
+}
+
+/* когда строка помечена классом is-open, показываем детали */
+.order-row.is-open + .order-details-row .details-box {
+  display: block;
+}
+
+/* === Общие стили для всех кнопок (.btn) === */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: var(--color-primary);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  text-align: center;
+}
+.btn:hover {
+  background-color: var(--color-primary-hover);
+}
+/* === Форма “Создание объявления” из Figma === */
+.ad-form {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+.ad-form__inner {
+  display: grid;
+  gap: 24px;
+}
+/* Две колонки в нужных рядах */
+.form-row--2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.form-row {
+  display: flex;
+  flex-direction: column;
+}
+.form-row label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 6px;
+}
+.form-hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+/* Поля ввода, селекты, textarea */
+.form-control {
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color .2s ease;
+}
+.form-control:focus {
+  outline: none;
+  border-color: var(--color-primary, #187253);
+}
+
+/* Скрываем дефолтный input[file] */
+.file-input {
+  display: none;
+}
+/* Кнопка-лейбл */
+.btn-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.btn-upload .icon {
+  font-size: 16px;
+}
+.btn-upload:hover {
+  background: #e8e8e8;
+}
+
+/* Действующие кнопки */
+.btn {
+  display: inline-block;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.btn-submit {
+  background: var(--color-primary, #187253);
+  color: #fff;
+  width: 100%;
+}
+.btn-submit:hover {
+  background: var(--color-primary-hover, #145b43);
+}
+.btn-secondary {
+  background: #f5f5f5;
+  color: #333;
+  margin-top: 12px;
+  width: 100%;
+}
+.btn-secondary:hover {
+  background: #e0e0e0;
+}
+
+/* Кнопки в один ряд */
+.ad-actions-full {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.image-previews {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.image-thumb {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.remove-existing {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+.image-thumb {
+  position: relative;
+  display: inline-block;
+  margin: 5px;
+}
+
+.image-thumb img {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+.image-thumb .remove-existing {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+}
+.image-thumb {
+  position: relative;
+  display: inline-block;
+  margin: 4px;
+}
+
+.image-thumb img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.image-thumb .remove-existing {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 10;
+}
+.account-user{
+  display: flex;
+  flex-direction: column; 
+  align-items: center;
+  text-align: center;      
+  gap: .5rem;               
+  margin-bottom: 2rem;
+}
+
+.account-user__avatar{
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-user__name  { font-weight: 600; line-height: 1.3; }
+.account-user__email { font-size: 14px; color:#6b6b6b; white-space: normal; }
+.catalog-filter,
+.catalog-filter form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    background: #f6f6fa;
+    padding: 16px;
+    border-radius: 8px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.catalog-filter input[type="text"],
+.catalog-filter input[type="number"],
+.catalog-filter select {
+    border: 1px solid #ccc;
+    background: #f6f6fa;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 15px;
+    min-width: 120px;
+    box-sizing: border-box;
+}
+
+.catalog-filter button,
+.catalog-filter .button {
+    background: #e5eaff;
+    color: #2b2c3d;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    box-shadow: 0 2px 4px 0 #ececf780;
+}
+
+.catalog-filter button:hover,
+.catalog-filter .button:hover {
+    background: #d6dbfa;
+}
+/* Пример стилей для поиска в каталоге */
+/* Общие стили */
+.filter-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+}
+
+.filter-search {
+    margin-bottom: 20px;
+}
+
+.filter-search input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.filter-grid select,
+.filter-grid input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.filter-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-actions .button {
+    padding: 8px 16px;
+    background-color: #0073aa;
+    color: #fff;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.filter-actions .button:hover {
+    background-color: #005f8d;
+}
+
+
+.price-range {
+    display: flex;
+    gap: 8px;
+}
+
+.price-range input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.filter-checkbox {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.filter-checkbox input {
+    margin-right: 8px;
+}
+/* Основной контейнер для элемента */
+.product-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10px 0;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: background-color 0.3s;
+}
+
+.product-preview {
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.product-preview img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.product-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.product-description {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.product-price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-right: 20px;
+}
+
+.product-date {
+    font-size: 12px;
+    color: #999;
+    margin-right: 20px;
+}
+
+.product-author {
+    font-size: 14px;
+    color: #555;
+    font-style: italic;
+    text-align: right;
+    flex-shrink: 0;
+}
+.product-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  background: #fafafa;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.product-preview {
+  flex: 0 0 110px;
+  display: flex;
+  align-items: flex-start;
+}
+.product-preview img {
+  width: 110px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.product-details {
+  flex: 1 1 0%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.product-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.product-title a { color: #2a2996; text-decoration: underline; }
+.product-description {
+  font-size: 14px;
+  color: #4c4c4c;
+}
+
+.product-meta {
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  min-width: 120px;
+}
+.product-price {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 4px;
+}
+.product-date {
+  font-size: 13px;
+  color: #999;
+}
+.product-author {
+  font-size: 14px;
+  color: #555;
+  font-style: italic;
+}
+.catalog-row {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  background: #fff;
+  gap: 24px;
+  min-height: 110px;
+}
+
+.catalog-row__thumb {
+  flex: 0 0 110px;
+  margin-right: 10px;
+  display: flex;
+  align-items: flex-start;
+}
+.catalog-row__thumb img {
+  width: 110px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.catalog-row__text {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.catalog-row__title {
+  font-weight: 600;
+  font-size: 18px;
+  color: #237ebd;
+  text-decoration: none;
+  margin-bottom: 2px;
+  display: inline-block;
+}
+.catalog-row__desc {
+  font-size: 14px;
+  color: #444;
+}
+
+.catalog-row__meta {
+  flex: 0 0 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+  min-width: 100px;
+  gap: 6px;
+}
+.catalog-row__price {
+  font-weight: 700;
+  font-size: 17px;
+  color: #222;
+}
+.catalog-row__date {
+  font-size: 13px;
+  color: #888;
+}
+.catalog-row__author {
+  font-size: 13px;
+  color: #656565;
+  font-style: italic;
+}
+/* Стилизация подкатегорий WooCommerce в виде плиток */
+ul.products .product-category, /* WooCommerce стандарт */
+ul.subcategories .product-category, /* Иногда класс subcategories */
+.product-category {
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+    padding: 28px 18px;
+    min-width: 140px;
+    min-height: 80px;
+    background: #ededed;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 500;
+    transition: box-shadow .15s;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+ul.products .product-category a,
+.product-category a {
+    color: #1a2f2e;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+ul.products .product-category:hover,
+.product-category:hover {
+    box-shadow: 0 2px 12px rgba(33,64,60,0.13);
+    background: #f6f6fa;
+}
+.subcategories-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 30px;
+}
+.catalog-item {
+  display: inline-block;
+  padding: 18px 28px;
+  background: #f6f6fa;
+  border-radius: 7px;
+  font-size: 18px;
+  margin: 0 4px 12px 0;
+  text-align: center;
+  min-width: 160px;
+  min-height: 60px;
+  color: #234;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background .18s, box-shadow .18s;
+  box-shadow: 0 2px 6px #ececf7aa;
+}
+.catalog-item:hover {
+  background: #e7f7ff;
+  color: #222;
+}
+
+.product-detail .product-title {
+    font-size: 32px !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    margin-bottom: 20px !important;
+}
+.product-detail .product-price {
+    font-size: 26px !important;
+    color: #187253 !important;
+    margin-bottom: 25px !important;
+}
+.product-detail .product-info {
+    padding: 30px !important;
+    background: #fff !important;
+    border-radius: 8px !important;
+}
+/* Контейнер товара в строку */
+.single-product div.product {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4rem;            /* расстояние между колонками */
+}
+
+/* 1. ЛЕВАЯ колонка — большая картинка + карусель */
+.single-product div.product  .woocommerce-product-gallery {
+    flex: 0 0 40%;        /* фиксируем ~40 % ширины */
+}
+
+/* 2. ЦЕНТР — заголовок, цена, кнопки, описание */
+.single-product div.product  .summary {
+    flex: 1 1 auto;       /* растягивается на остаток */
+    max-width: 45%;
+}
+
+/* 3. ПРАВАЯ колонка — логотип бренда */
+.single-product div.product  .brand-logo { /* <-- свой класс в шаблоне */
+    flex: 0 0 15%;
+    align-self: flex-start;
+}
+
+/* Немного косметики */
+.single-product .summary .price {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem;
+}
+.single-product .summary .cart {
+    margin: 2rem 0;
+}
+/* Выравниваем превью под большим изображением */
+.single-product div.product  .flex-control-thumbs {
+    margin-top: 1rem;
+    justify-content: center;
+}
+
+/* Делаем миниатюры в одну строку и чуть меньше */
+.single-product div.product  .flex-control-thumbs li {
+    max-width: 90px;
+}
+/* === SINGLE-PRODUCT CLEAN ============================== */
+body.single-product div.product{display:flex;flex-wrap:nowrap;gap:4rem;}
+body.single-product .woocommerce-product-gallery{flex:0 0 40%;}
+body.single-product .product-info{flex:1 1 auto;max-width:45%;}
+body.single-product .brand-logo{flex:0 0 15%;align-self:flex-start;}
+body.single-product h1.product-title{font-size:36px;font-weight:600;margin:0 0 1rem;}
+body.single-product .price{font-size:1.4rem;font-weight:600;margin-bottom:1.5rem;}
+body.single-product form.cart{margin:2rem 0;}
+@media(max-width:992px){
+  body.single-product div.product{flex-direction:column;}
+  body.single-product .woocommerce-product-gallery,
+  body.single-product .product-info,
+  body.single-product .brand-logo{max-width:100%;}
+  body.single-product .brand-logo{margin-top:2rem;}
+}
+/* flex-контейнер */
+.product-detail{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:4rem;
+}
+
+/* левая колонка (галерея) */
+.product-images{
+  flex:0 0 40%;
+}
+
+/* правая колонка (текст + кнопки) */
+.product-info{
+  flex:1 1 45%;
+  max-width:45%;
+}
+
+/* логотип бренда сбоку */
+.brand-logo{
+  flex:0 0 15%;
+  align-self:flex-start;
+}
+
+/* адаптив */
+@media(max-width:992px){
+  .product-detail{flex-direction:column;}
+  .product-images,
+  .product-info,
+  .brand-logo{max-width:100%;}
+  .brand-logo{margin-top:2rem;}
+}
+/* === single-product layout === */
+.single-product .site-main {
+    padding: 0 2rem;              /* внутренний отступ от белых краёв */
+}
+.product__wrap {                  /* см. single-product.php */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+.product__wrap .woocommerce-product-gallery {
+    flex: 0 0 50%;
+    max-width: 50%;
+}
+.product__wrap .summary {
+    flex: 1 1 50%;
+    max-width: 50%;
+}
+
+/* миниатюры одной строкой, чуть компактнее */
+.single-product .flex-control-thumbs li { max-width: 90px; }
+/* === Single product ======================================================= */
+
+/* Базовые поля вокруг контента (белая «бумага») */
+.single-product .site-main {
+    background:#fff;
+    padding:0 3rem;             /* меняйте цифру под нужный «воздух» */
+}
+
+/* Flex-обёртка галерея + summary */
+.product__wrap {
+    display:flex;
+    flex-wrap:wrap;
+    gap:4rem;                   /* расстояние между колонками */
+    position:relative;          /* нужно для позиционирования логотипа */
+}
+
+/* Левая колонка: галерея Woo */
+.woocommerce-product-gallery       {flex:0 0 40%; max-width:40%;}
+/* Правая колонка: summary */
+.summary                          {flex:1 1 60%; max-width:60%;}
+
+/* Сузили миниатюры под большим фото */
+ul.flex-control-thumbs li {max-width:90px;}
+
+/* Логотип бренда в правом верхнем углу */
+.brand-logo {
+    position:absolute;
+    top:2rem; right:2rem;
+    max-width:120px;
+    line-height:0;
+}
+
+/* ---------- Адаптив ------------------------------------------------------- */
+@media (max-width:1023px) {
+    .woocommerce-product-gallery,
+    .summary {flex:1 1 100%; max-width:100%;}
+    .brand-logo {position:static; margin:2rem auto; display:block;}
+}
+.flex-control-thumbs {           /* контейнер миниатюр */
+    margin:1rem -.25rem 0;
+    display:flex;
+    gap:.5rem;
+    list-style:none;
+    padding:0;
+}
+.flex-control-thumbs li {        /* сама «кнопка»-превью */
+    flex:0 0 80px;               /* ширина миниатюры */
+}
+
+/* == SINGLE-PRODUCT FIX PACK (2025-05-22) =============================== */
+
+/* 1. убираем случайный «салатовый» фон */
+.single-product .product__wrap,
+.single-product .woocommerce-product-gallery,
+.single-product .summary      { background:transparent !important; }
+
+/* 2. делаем контейнер товара белым */
+.single-product .container    { background:#fff; }
+
+/* 3. миниатюры без цифр, одной строкой */
+.single-product ul.flex-control-thumbs {
+    display:flex; gap:.5rem; margin:1rem 0 0;
+    list-style:none !important; padding:0;
+}
+.single-product ul.flex-control-thumbs li { flex:0 0 80px; }
+
+/* 4. табы WooCommerce как «кнопки», убираем буллеты */
+.single-product .woocommerce-tabs ul.tabs {
+    display:flex; gap:1rem; margin:2rem 0 1rem;
+    list-style:none; padding:0;
+}
+.single-product .woocommerce-tabs ul.tabs li {
+    margin:0; padding:0;
+}
+.single-product .woocommerce-tabs ul.tabs a {
+    display:inline-block; padding:.4rem .9rem;
+    background:#f4f4f6; border-radius:4px;
+    font-weight:500; text-decoration:none;
+    color:#2b2c3d;
+}
+.single-product .woocommerce-tabs ul.tabs li.active a {
+    background:#e7e7ff; color:#000;
+}
+
+/* 5. скрываем таб «Отзывы», если он остался */
+.single-product .woocommerce-tabs li.reviews_tab { display:none !important; }
+/* === SINGLE PRODUCT RESTORE 22-05-2025 ================================ */
+
+/* 1. возвращаем «воздух» и белый фон контейнера  */
+.single-product .site-main       {background:#fff; padding:0 3rem;}
+.single-product .product__wrap   {display:flex; flex-wrap:wrap; gap:3rem;}
+
+/* 2. размеры колонок (десктоп) */
+@media (min-width:1024px){
+    .woocommerce-product-gallery {flex:0 0 42%; max-width:42%;}
+    .summary                     {flex:1 1 58%; max-width:58%;}
+}
+
+/* 3. возвращаем форму «В корзину» */
+.single-product .cart           {margin:1.5rem 0; display:flex; gap:.75rem; align-items:center;}
+.single-product .quantity input {max-width:90px;}
+.single-product .single_add_to_cart_button{
+    padding:.6rem 1.6rem; border:0; border-radius:4px;
+    background:#5b4acb; color:#fff; font-weight:600; cursor:pointer;
+}
+.single-product .single_add_to_cart_button:hover{opacity:.9;}
+
+/* 4. миниатюры одной строкой, без маркеров */
+.flex-control-thumbs{display:flex; gap:.5rem; margin:1rem 0 0; list-style:none; padding:0;}
+.flex-control-thumbs li{flex:0 0 80px;}
+
+ /* 5. табы: убираем «Отзывы» и делаем кнопку «Описание» */
+.woocommerce-tabs ul.tabs{display:flex; gap:1rem; margin:2rem 0 1rem; list-style:none; padding:0;}
+.woocommerce-tabs li.reviews_tab{display:none;}
+.woocommerce-tabs ul.tabs a{
+    display:inline-block; padding:.4rem 1rem; background:#f4f4f7;
+    border-radius:4px; text-decoration:none; color:#2c2d35; font-weight:500;
+}
+.woocommerce-tabs ul.tabs li.active a{background:#e7e7ff;}
+
+/* 6. строка «Продавец» (если выводится через PHP-хук) */
+.product-vendor{margin:.75rem 0 0; font-size:.9rem;}
