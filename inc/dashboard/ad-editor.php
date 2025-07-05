@@ -24,6 +24,27 @@ $cat_terms   = $is_edit
   ? wp_get_post_terms( $post_id, 'product_cat', [ 'fields' => 'ids' ] )
   : [];
 $cat_id      = ! empty( $cat_terms ) ? $cat_terms[0] : 0;
+
+// Вычисляем выбранную родительскую категорию
+$parent_cat_id = 0;
+if ( $cat_id ) {
+    $term = get_term( $cat_id, 'product_cat' );
+    if ( $term && ! is_wp_error( $term ) ) {
+        $parent_cat_id = $term->parent ? $term->parent : $term->term_id;
+    }
+}
+
+// Списки категорий
+$parent_cats = get_terms([
+    'taxonomy'   => 'product_cat',
+    'parent'     => 0,
+    'hide_empty' => false,
+]);
+$subcats = $parent_cat_id ? get_terms([
+    'taxonomy'   => 'product_cat',
+    'parent'     => $parent_cat_id,
+    'hide_empty' => false,
+]) : [];
 $gallery_ids = $is_edit
   ? array_filter( array_map( 'absint',
       explode( ',', get_post_meta( $post_id, '_product_image_gallery', true ) )
@@ -64,14 +85,26 @@ $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
              value="<?php echo esc_attr( $title ); ?>" required class="form-control">
     </div>
 
-    <!-- Бренд -->
+    <!-- Категория -->
     <div class="form-row">
-      <label for="ad_cat"><?php esc_html_e( 'Бренд','my-custom-theme' ); ?></label>
-      <?php wp_dropdown_categories([
-        'taxonomy'=>'product_cat','hide_empty'=>false,'name'=>'ad_cat','id'=>'ad_cat',
-        'hierarchical'=>true,'show_option_none'=>__('Выберите…','my-custom-theme'),
-        'selected'=>$cat_id,'class'=>'form-control'
-      ]); ?>
+      <label for="ad_parent_cat"><?php esc_html_e( 'Категория', 'my-custom-theme' ); ?></label>
+      <select name="ad_parent_cat" id="ad_parent_cat" class="form-control">
+        <option value=""><?php esc_html_e( 'Выберите…', 'my-custom-theme' ); ?></option>
+        <?php foreach ( $parent_cats as $p ) : ?>
+          <option value="<?php echo esc_attr( $p->term_id ); ?>" <?php selected( $parent_cat_id, $p->term_id ); ?>><?php echo esc_html( $p->name ); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Подкатегория -->
+    <div class="form-row" id="subcat-row" style="<?php echo $parent_cat_id ? '' : 'display:none'; ?>">
+      <label for="ad_cat"><?php esc_html_e( 'Подкатегория', 'my-custom-theme' ); ?></label>
+      <select name="ad_cat" id="ad_cat" class="form-control" data-selected="<?php echo esc_attr( $cat_id ); ?>">
+        <option value=""><?php esc_html_e( 'Выберите…', 'my-custom-theme' ); ?></option>
+        <?php foreach ( $subcats as $sub ) : ?>
+          <option value="<?php echo esc_attr( $sub->term_id ); ?>" <?php selected( $cat_id, $sub->term_id ); ?>><?php echo esc_html( $sub->name ); ?></option>
+        <?php endforeach; ?>
+      </select>
     </div>
 
     <!-- Модель -->
@@ -185,9 +218,56 @@ $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const fileInput = document.getElementById('ad-images-input');
-  const previews = document.querySelector('.image-previews');
-  const removeBox = document.getElementById('remove-images-container');
+  const ajaxUrl     = '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>';
+  const parentSel   = document.getElementById('ad_parent_cat');
+  const subSel      = document.getElementById('ad_cat');
+  const subRow      = document.getElementById('subcat-row');
+  const fileInput   = document.getElementById('ad-images-input');
+  const previews    = document.querySelector('.image-previews');
+  const removeBox   = document.getElementById('remove-images-container');
+
+  if (parentSel && subSel) {
+    const loadSubcats = function(pid, selected){
+      if (!pid) {
+        subSel.innerHTML = '<option value=""><?php esc_html_e( 'Выберите…', 'my-custom-theme' ); ?></option>';
+        subSel.disabled = true;
+        if (subRow) subRow.style.display = 'none';
+        return;
+      }
+      fetch(ajaxUrl, {
+        method: 'POST',
+        headers: {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'},
+        body: 'action=mytheme_get_subcategories&parent_id=' + pid
+      })
+      .then(r => r.json())
+      .then(res => {
+        subSel.innerHTML = '<option value=""><?php esc_html_e( 'Выберите…', 'my-custom-theme' ); ?></option>';
+        if (res.success && Array.isArray(res.data) && res.data.length) {
+          res.data.forEach(t => {
+            const opt = document.createElement('option');
+            opt.value = t.id;
+            opt.textContent = t.name;
+            if (selected && String(selected) === String(t.id)) opt.selected = true;
+            subSel.appendChild(opt);
+          });
+          subSel.disabled = false;
+          if (subRow) subRow.style.display = '';
+        } else {
+          subSel.disabled = true;
+          if (subRow) subRow.style.display = 'none';
+        }
+      });
+    };
+
+    parentSel.addEventListener('change', function(){
+      loadSubcats(this.value, null);
+    });
+
+    if (parentSel.value) {
+      loadSubcats(parentSel.value, subSel.dataset.selected);
+    }
+  }
+
   if(!fileInput||!previews||!removeBox) return;
 
   const dt = new DataTransfer();

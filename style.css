@@ -774,6 +774,15 @@ img { max-width: 100%; height: auto; display: block; }
 .ads-pagination .page-numbers:hover{
   background:#21403c;color:#fff;border-color:#21403c;
 }
+.products-pagination{margin-top:30px;text-align:center;}
+.products-pagination .page-numbers{
+  display:inline-block;margin:0 4px;padding:6px 10px;
+  border:1px solid #ccc;border-radius:4px;
+}
+.products-pagination .current,
+.products-pagination .page-numbers:hover{
+  background:#21403c;color:#fff;border-color:#21403c;
+}
 /* ===== 16. Orders accordion clean ===== */
 
 /* строка деталей всегда видима как <tr> */

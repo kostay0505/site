@@ -48,10 +48,34 @@ $section = isset( $_GET['section'] )
   <?php if ( 'dashboard' === $section ) :
 
     // --- Dashboard: поиск + фильтр + список всех товаров ---
-    $current_orderby = sanitize_text_field( wp_unslash( $_GET['orderby'] ?? 'date' ) );
-    $current_per     = intval( wp_unslash( $_GET['per_page'] ?? 10 ) );
+    $current_orderby = sanitize_text_field( wp_unslash( $_GET['orderby']  ?? 'date_desc' ) );
+    $current_per     = intval(           wp_unslash( $_GET['per_page'] ?? 10       ) );
+    $search_term     = sanitize_text_field( wp_unslash( $_GET['s']       ?? ''        ) );
     $paged           = max( 1, get_query_var( 'paged', 1 ) );
-    $order           = ( 'date' === $current_orderby ) ? 'DESC' : 'ASC';
+
+    // Настройка сортировки
+    $order    = 'DESC';
+    $orderby  = 'date';
+    $meta_key = '';
+    switch ( $current_orderby ) {
+      case 'date_asc':
+        $order   = 'ASC';
+        $orderby = 'date';
+        break;
+      case 'price_desc':
+        $order    = 'DESC';
+        $orderby  = 'meta_value_num';
+        $meta_key = '_price';
+        break;
+      case 'price_asc':
+        $order    = 'ASC';
+        $orderby  = 'meta_value_num';
+        $meta_key = '_price';
+        break;
+      default:
+        $order   = 'DESC';
+        $orderby = 'date';
+    }
 
     // Поиск
     ?>
@@ -63,6 +87,8 @@ $section = isset( $_GET['section'] )
         <label for="product-search-input"><?php esc_html_e( 'Search', 'my-custom-theme' ); ?></label>
         <input type="text"
                id="product-search-input"
+               name="s"
+               value="<?php echo esc_attr( $search_term ); ?>"
                placeholder="<?php esc_attr_e( 'Search by title...', 'my-custom-theme' ); ?>">
         <div id="search-suggestions" class="search-suggestions"></div>
       </div>
@@ -75,8 +101,10 @@ $section = isset( $_GET['section'] )
           <label>
             <?php esc_html_e( 'Sort by', 'my-custom-theme' ); ?>
             <select name="orderby">
-              <option value="date" <?php selected( $current_orderby, 'date' ); ?>><?php esc_html_e( 'Date Descending', 'my-custom-theme' ); ?></option>
-              <option value="title"<?php selected( $current_orderby, 'title' ); ?>><?php esc_html_e( 'Title', 'my-custom-theme' ); ?></option>
+              <option value="date_desc"  <?php selected( $current_orderby, 'date_desc'  ); ?>><?php esc_html_e( 'Date Descending',  'my-custom-theme' ); ?></option>
+              <option value="date_asc"   <?php selected( $current_orderby, 'date_asc'   ); ?>><?php esc_html_e( 'Date Ascending',   'my-custom-theme' ); ?></option>
+              <option value="price_desc" <?php selected( $current_orderby, 'price_desc' ); ?>><?php esc_html_e( 'Price Descending', 'my-custom-theme' ); ?></option>
+              <option value="price_asc"  <?php selected( $current_orderby, 'price_asc'  ); ?>><?php esc_html_e( 'Price Ascending',  'my-custom-theme' ); ?></option>
             </select>
           </label>
           <label>
@@ -104,10 +132,16 @@ $section = isset( $_GET['section'] )
     $args = [
       'post_type'      => 'product',
       'posts_per_page' => $current_per,
-      'orderby'        => $current_orderby,
+      'orderby'        => $orderby,
       'order'          => $order,
       'paged'          => $paged,
     ];
+    if ( $meta_key ) {
+      $args['meta_key'] = $meta_key;
+    }
+    if ( $search_term ) {
+      $args['s'] = $search_term;
+    }
     if ( isset( $_GET['used_only'] ) ) {
       $args['meta_query'][] = [
         'key'     => '_condition',
@@ -124,7 +158,12 @@ $section = isset( $_GET['section'] )
         <?php endwhile; ?>
       </ul>
       <div class="products-pagination">
-        <?php the_posts_pagination( [ 'mid_size'=>1, 'prev_text'=>'«', 'next_text'=>'»' ] ); ?>
+        <?php the_posts_pagination( [
+          'mid_size'  => 1,
+          'prev_text' => '«',
+          'next_text' => '»',
+          'total'     => $products->max_num_pages,
+        ] ); ?>
       </div>
     <?php else : ?>
       <p><?php esc_html_e( 'No listings found.', 'my-custom-theme' ); ?></p>
@@ -154,9 +193,11 @@ $section = isset( $_GET['section'] )
         </div>
       <?php
       else :
-        // Последний уровень: подкатегорий нет → показываем товары с фильтром, как в Dashboard
-        // (можно скопировать блок фильтрации Dashboard и добавить tax_query)
-        echo '<p>' . esc_html__( 'В этой категории ещё нет подкатегорий.', 'my-custom-theme' ) . '</p>';
+        // Последний уровень: вывод товаров текущей категории
+        get_template_part( 'inc/catalog/catalog-section', null, [
+          'term'    => $term,
+          'section' => $section,
+        ] );
       endif;
 
     else :
