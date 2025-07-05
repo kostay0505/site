@@ -176,8 +176,7 @@ $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
     <div class="form-row ad-actions-full">
       <button type="submit" class="btn btn-submit"><?php esc_html_e('Сохранить','my-custom-theme');?></button>
       <?php if($is_edit):?>
-        <button type="submit" name="ad_delete" value="1" class="btn btn-secondary"
-                onclick="return confirm('<?php echo esc_js(__('Удалить?','my-custom-theme'));?>');"><?php esc_html_e('Удалить','my-custom-theme');?></button>
+        <button type="submit" name="ad_delete" value="1" class="btn btn-secondary ad-delete-btn"><?php esc_html_e('Удалить','my-custom-theme');?></button>
       <?php endif;?>
     </div>
 

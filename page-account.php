@@ -217,27 +217,35 @@ case 'ads':
 				</a>
 
 				<!-- Удалить -->
-				<a class="btn btn--small btn--danger ads-delete"
-				   href="<?php echo esc_url( wp_nonce_url(
-					   add_query_arg(
-						   [
-							   'section' => 'ads',
-							   'mode'    => 'delete',      // обработчик удаления
-							   'ad_id'   => get_the_ID(),
-						   ],
-						   $account_page_url
-					   ),
-					   'mytheme_delete_ad_' . get_the_ID()
-				   ) ); ?>"
-				   onclick="return confirm('<?php echo esc_js( __( 'Удалить объявление?', 'my-custom-theme' ) ); ?>');">
-					<?php esc_html_e( 'Удалить', 'my-custom-theme' ); ?>
-				</a>
-			</div>
+                                <a class="btn btn--small btn--danger ads-delete"
+                                   href="<?php echo esc_url( wp_nonce_url(
+                                           add_query_arg(
+                                                   [
+                                                           'section' => 'ads',
+                                                           'mode'    => 'delete',      // обработчик удаления
+                                                           'ad_id'   => get_the_ID(),
+                                                   ],
+                                                   $account_page_url
+                                           ),
+                                           'mytheme_delete_ad_' . get_the_ID()
+                                   ) ); ?>">
+                                        <?php esc_html_e( 'Удалить', 'my-custom-theme' ); ?>
+                                </a>
+                        </div>
 
 		</div>
 	<?php endwhile;
 	wp_reset_postdata();
-	echo '</div>'; /* .ads-grid */
+        echo '</div>'; /* .ads-grid */
+
+        // Модальное окно подтверждения удаления
+        echo '<div id="ad-delete-modal" class="confirm-overlay hidden">'
+           . '<div class="confirm-box">'
+           . '<p>' . esc_html__( 'Удалить объявление?', 'my-custom-theme' ) . '</p>'
+           . '<div class="confirm-buttons">'
+           . '<button type="button" class="btn btn--danger confirm-yes">' . esc_html__( 'Удалить', 'my-custom-theme' ) . '</button>'
+           . '<button type="button" class="btn confirm-no">' . esc_html__( 'Отмена', 'my-custom-theme' ) . '</button>'
+           . '</div></div></div>';
 
 	/* ---------- пагинация ---------- */
 	echo '<div class="ads-pagination">';

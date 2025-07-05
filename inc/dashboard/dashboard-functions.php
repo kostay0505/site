@@ -139,7 +139,14 @@ function mytheme_handle_delete_ad() {
         wp_die( __( 'У вас нет прав для удаления этого объявления.', 'my-custom-theme' ) );
     }
     wp_trash_post( $ad_id );
-    wp_safe_redirect( remove_query_arg( [ 'mode', 'ad_id', '_wpnonce' ], get_permalink( get_queried_object_id() ) ) );
+
+    // Возвращаем пользователя в раздел объявлений
+    $redirect_url = add_query_arg(
+        'section',
+        'ads',
+        get_permalink( get_queried_object_id() )
+    );
+    wp_safe_redirect( $redirect_url );
     exit;
 }
 
