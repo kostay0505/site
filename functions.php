@@ -492,6 +492,31 @@ function mytheme_enqueue_cart_script() {
 }
 
 /* ──────────────────────────
+18. AJAX: получение подкатегорий по родителю
+───────────────────────────────────── */
+add_action( 'wp_ajax_mytheme_get_subcategories', 'mytheme_get_subcategories' );
+add_action( 'wp_ajax_nopriv_mytheme_get_subcategories', 'mytheme_get_subcategories' );
+function mytheme_get_subcategories() {
+    $parent_id = absint( $_POST['parent_id'] ?? 0 );
+    $terms = get_terms( [
+        'taxonomy'   => 'product_cat',
+        'parent'     => $parent_id,
+        'hide_empty' => false,
+    ] );
+
+    if ( is_wp_error( $terms ) ) {
+        wp_send_json_error();
+    }
+
+    $out = [];
+    foreach ( $terms as $t ) {
+        $out[] = [ 'id' => $t->term_id, 'name' => $t->name ];
+    }
+
+    wp_send_json_success( $out );
+}
+
+/* ──────────────────────────
 17. Чиним ссылку «Просмотр заказа»
 ───────────────────────────────────── */
 add_filter( 'woocommerce_my_account_my_orders_actions', 'mytheme_fix_myorders_view_link', 10, 2 );
