@@ -27,9 +27,10 @@ $args = array(
     'paged'          => $paged,
     'tax_query'      => array(
         array(
-            'taxonomy' => 'product_cat',
-            'field'    => 'term_id',
-            'terms'    => $term->term_id,
+            'taxonomy'       => 'product_cat',
+            'field'          => 'term_id',
+            'terms'          => $term->term_id,
+            'include_children' => false,
         ),
     ),
 );

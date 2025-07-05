@@ -213,6 +213,22 @@ function mytheme_auto_promote_admin() {
 }
 
 /* ──────────────────────────
+ 9a. Product category archives: exclude child categories
+───────────────────────────────────── */
+add_action( 'pre_get_posts', 'mytheme_exclude_child_products' );
+function mytheme_exclude_child_products( $query ) {
+    if ( ! is_admin() && $query->is_main_query() && $query->is_tax( 'product_cat' ) ) {
+        $tax_query = (array) $query->get( 'tax_query' );
+        foreach ( $tax_query as &$tax ) {
+            if ( isset( $tax['taxonomy'] ) && 'product_cat' === $tax['taxonomy'] ) {
+                $tax['include_children'] = false;
+            }
+        }
+        $query->set( 'tax_query', $tax_query );
+    }
+}
+
+/* ──────────────────────────
 10. AJAX: утверждение постов из админ-панели
 ───────────────────────────────────── */
 add_action( 'wp_ajax_approve_post', 'mytheme_ajax_approve_post' );
