@@ -135,7 +135,7 @@
   });
 })();
 jQuery(document).ready(function($) {
-    $(document).on('click', '.order-delete', function(e) {
+$(document).on('click', '.order-delete', function(e) {
         e.preventDefault();
 
         var orderId = $(this).data('order-id'); // Получаем ID заказа из кнопки
@@ -159,4 +159,42 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // ---------- Подтверждение удаления объявления ----------
+    const modal   = document.getElementById('ad-delete-modal');
+    if (modal) {
+        const yesBtn = modal.querySelector('.confirm-yes');
+        const noBtn  = modal.querySelector('.confirm-no');
+        let action = null;
+
+        document.addEventListener('click', function(ev){
+            const link = ev.target.closest('.ads-delete');
+            const btn  = ev.target.closest('.ad-delete-btn');
+            if (!link && !btn) return;
+            ev.preventDefault();
+
+            if (link) {
+                const href = link.getAttribute('href');
+                action = function(){ window.location.href = href; };
+            }
+
+            if (btn) {
+                const form = btn.closest('form');
+                action = function(){ form.submit(); };
+            }
+
+            modal.classList.remove('hidden');
+        });
+
+        yesBtn.addEventListener('click', function(){
+            modal.classList.add('hidden');
+            if (typeof action === 'function') action();
+            action = null;
+        });
+
+        noBtn.addEventListener('click', function(){
+            modal.classList.add('hidden');
+            action = null;
+        });
+    }
 });
