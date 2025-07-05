@@ -23,7 +23,19 @@ $cond        = $is_edit ? get_post_meta( $post_id, '_condition', true ) : 'new';
 $cat_terms   = $is_edit
   ? wp_get_post_terms( $post_id, 'product_cat', [ 'fields' => 'ids' ] )
   : [];
-$cat_id      = ! empty( $cat_terms ) ? $cat_terms[0] : 0;
+$cat_id    = 0;
+$subcat_id = 0;
+if ( ! empty( $cat_terms ) ) {
+  $term = get_term( $cat_terms[0], 'product_cat' );
+  if ( $term && ! is_wp_error( $term ) ) {
+    if ( $term->parent ) {
+      $cat_id    = $term->parent;
+      $subcat_id = $term->term_id;
+    } else {
+      $cat_id = $term->term_id;
+    }
+  }
+}
 $gallery_ids = $is_edit
   ? array_filter( array_map( 'absint',
       explode( ',', get_post_meta( $post_id, '_product_image_gallery', true ) )
@@ -34,6 +46,16 @@ $quantity    = $is_edit ? get_post_meta( $post_id, '_quantity', true ) : '';
 $unit        = $is_edit ? get_post_meta( $post_id, '_unit', true ) : '';
 $country     = $is_edit ? get_post_meta( $post_id, '_country', true ) : '';
 $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
+
+// Категории верхнего уровня, доступные для выбора
+$allowed_slugs = [ 'audio', 'lightning', 'visual', 'rigging', 'staging' ];
+$allowed_cats  = [];
+foreach ( $allowed_slugs as $slug ) {
+  $term = get_term_by( 'slug', $slug, 'product_cat' );
+  if ( $term && ! is_wp_error( $term ) ) {
+    $allowed_cats[] = $term;
+  }
+}
 ?>
 
 <h2 class="ad-editor-title">
@@ -64,14 +86,30 @@ $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
              value="<?php echo esc_attr( $title ); ?>" required class="form-control">
     </div>
 
-    <!-- Бренд -->
+    <!-- Категория -->
     <div class="form-row">
-      <label for="ad_cat"><?php esc_html_e( 'Бренд','my-custom-theme' ); ?></label>
-      <?php wp_dropdown_categories([
-        'taxonomy'=>'product_cat','hide_empty'=>false,'name'=>'ad_cat','id'=>'ad_cat',
-        'hierarchical'=>true,'show_option_none'=>__('Выберите…','my-custom-theme'),
-        'selected'=>$cat_id,'class'=>'form-control'
-      ]); ?>
+      <label for="ad_cat"><?php esc_html_e( 'Категория','my-custom-theme' ); ?></label>
+      <select name="ad_cat" id="ad_cat" class="form-control">
+        <option value=""><?php esc_html_e( 'Выберите…','my-custom-theme' ); ?></option>
+        <?php foreach ( $allowed_cats as $cat ) : ?>
+          <option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $cat_id, $cat->term_id ); ?>>
+            <?php echo esc_html( $cat->name ); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Подкатегория -->
+    <div class="form-row" id="subcat-row" style="<?php echo $subcat_id ? '' : 'display:none;'; ?>">
+      <label for="ad_subcat"><?php esc_html_e( 'Подкатегория', 'my-custom-theme' ); ?></label>
+      <select name="ad_subcat" id="ad_subcat" class="form-control" data-selected="<?php echo esc_attr( $subcat_id ); ?>">
+        <option value=""><?php esc_html_e( 'Выберите…','my-custom-theme' ); ?></option>
+        <?php if ( $subcat_id ) : ?>
+          <?php foreach ( get_terms( [ 'taxonomy' => 'product_cat', 'parent' => $cat_id, 'hide_empty' => false ] ) as $child ) : ?>
+            <option value="<?php echo esc_attr( $child->term_id ); ?>" <?php selected( $subcat_id, $child->term_id ); ?>><?php echo esc_html( $child->name ); ?></option>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </select>
     </div>
 
     <!-- Модель -->

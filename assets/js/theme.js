@@ -197,4 +197,34 @@ $(document).on('click', '.order-delete', function(e) {
             action = null;
         });
     }
+
+    // ---------- Категории и подкатегории в редакторе объявлений ----------
+    const catSelect    = document.getElementById('ad_cat');
+    const subcatRow    = document.getElementById('subcat-row');
+    const subcatSelect = document.getElementById('ad_subcat');
+
+    function loadSubcats(catId, selected){
+        if(!catSelect || !subcatSelect || !subcatRow) return;
+        subcatSelect.innerHTML = '<option value="">Выберите…</option>';
+        if(!catId){
+            subcatRow.style.display = 'none';
+            return;
+        }
+        fetch(`${window.location.origin}/wp-json/wp/v2/product_cat?parent=${catId}&per_page=100`)
+            .then(r=>r.json())
+            .then(data=>{
+                if(Array.isArray(data) && data.length){
+                    subcatSelect.innerHTML = '<option value="">Выберите…</option>' +
+                        data.map(t=>`<option value="${t.id}" ${selected==t.id?'selected':''}>${t.name}</option>`).join('');
+                    subcatRow.style.display = '';
+                }else{
+                    subcatRow.style.display = 'none';
+                }
+            });
+    }
+
+    if(catSelect && subcatSelect && subcatRow){
+        catSelect.addEventListener('change', ()=>loadSubcats(parseInt(catSelect.value,10)||0));
+        loadSubcats(parseInt(catSelect.value,10)||0, parseInt(subcatSelect.dataset.selected||0,10));
+    }
 });
