@@ -1666,3 +1666,10 @@ ul.flex-control-thumbs li {max-width:90px;}
 
 /* 6. строка «Продавец» (если выводится через PHP-хук) */
 .product-vendor{margin:.75rem 0 0; font-size:.9rem;}
+
+/* === Confirm modal for ads delete === */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.confirm-overlay.hidden{display:none;}
+.confirm-box{background:#fff;padding:20px;border-radius:6px;max-width:320px;text-align:center;}
+.confirm-buttons{margin-top:15px;display:flex;justify-content:center;gap:10px;}
+
