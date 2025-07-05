@@ -524,11 +524,14 @@ if ( ! function_exists( 'mytheme_use_local_avatar' ) ) {
             $img = wp_get_attachment_image_src( $attachment_id, [ $args['size'], $args['size'] ] );
             if ( $img ) {
                 $args['url'] = $img[0];
+                $args['found_avatar'] = true; // tell WP that a custom avatar was found
             }
         }
         return $args;
     }
 }
+// Use local avatars instead of Gravatar
+add_filter( 'pre_get_avatar_data', 'mytheme_use_local_avatar', 10, 2 );
 /* ===== Выводим продавца под кнопкой «В корзину» ===== */
 add_action( 'woocommerce_single_product_summary', 'mytheme_show_vendor', 26 );
 function mytheme_show_vendor() {
