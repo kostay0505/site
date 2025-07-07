@@ -581,3 +581,49 @@ function mytheme_show_vendor() {
         );
     }
 }
+
+/* ----------------------------------------------------
+ *  Перенаправляем WooCommerce-категории в каталог
+ *  Стратегия A: /products/?section=SLUG
+ * ---------------------------------------------------- */
+
+/**
+ * 1. Подменяем ссылку категории во всех местах
+ *    (хлебные крошки, виджеты, get_term_link и т. д.)
+ */
+add_filter( 'term_link', 'mytheme_catalog_term_link', 10, 3 );
+function mytheme_catalog_term_link( $url, $term, $taxonomy ) {
+
+    // работаем только с товарными категориями WooCommerce
+    if ( 'product_cat' === $taxonomy && ! is_wp_error( $term ) ) {
+
+        // путь до каталога — при необходимости измените '/products/'
+        return home_url( '/products/?section=' . $term->slug );
+    }
+
+    return $url;
+}
+
+/**
+ * 2. Делаем 301-редирект со стандартной страницы-архива
+ *    /product-category/... --> /products/?section=...
+ */
+add_action( 'template_redirect', 'mytheme_redirect_product_cat_archives' );
+function mytheme_redirect_product_cat_archives() {
+
+    // Проверяем, открыта ли страница таксономии product_cat
+    if ( is_tax( 'product_cat' ) ) {
+
+        $term = get_queried_object();
+
+        if ( $term && ! is_wp_error( $term ) ) {
+
+            // тот же базовый путь '/products/'
+            wp_safe_redirect(
+                home_url( '/products/?section=' . $term->slug ),
+                301      // постоянный редирект
+            );
+            exit;
+        }
+    }
+}
