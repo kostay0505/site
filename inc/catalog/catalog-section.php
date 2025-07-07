@@ -40,6 +40,23 @@ if ( isset( $_GET['used_only'] ) ) {
     );
 }
 $products = new WP_Query( $args );
+
+// Если товаров не найдено по метаполю, пробуем обычные категории WooCommerce
+if ( ! $products->have_posts() ) {
+    $term = get_term_by( 'slug', $slug, 'product_cat' );
+    if ( $term && ! is_wp_error( $term ) ) {
+        unset( $args['meta_query'] );
+        $args['tax_query'] = [
+            [
+                'taxonomy' => 'product_cat',
+                'field'    => 'slug',
+                'terms'    => $slug,
+                'include_children' => false,
+            ],
+        ];
+        $products = new WP_Query( $args );
+    }
+}
 ?>
 
 <h1 class="subcategory-title"><?php echo esc_html( $title ); ?></h1>
