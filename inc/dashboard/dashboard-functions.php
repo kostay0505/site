@@ -61,6 +61,14 @@ function mytheme_handle_save_ad() {
     update_post_meta( $post_id, '_ad_category',    $cat_slug );
     update_post_meta( $post_id, '_ad_subcategory', $subcat_slug );
 
+    // Also assign WooCommerce product categories for taxonomy archives
+    if ( function_exists( 'wp_set_object_terms' ) ) {
+        $terms = array_filter( [ $cat_slug, $subcat_slug ] );
+        if ( $terms ) {
+            wp_set_object_terms( $post_id, $terms, 'product_cat', false );
+        }
+    }
+
     // 6) Собираем существующую галерею
     $existing = array_filter( array_map( 'absint',
         explode( ',', get_post_meta( $post_id, '_product_image_gallery', true ) )

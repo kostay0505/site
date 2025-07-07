@@ -232,3 +232,5 @@ $(document).on('click', '.order-delete', function(e) {
         loadSubcats(catSelect.value || '', subcatSelect.dataset.selected || '');
     }
 });
+});
+})();
