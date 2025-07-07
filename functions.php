@@ -177,26 +177,7 @@ function mytheme_add_custom_user_role() {
 }
 
 /* ──────────────────────────
- 6. Фильтрация товаров WooCommerce в категориях
-───────────────────────────────────── */
-add_action( 'woocommerce_product_query', 'mytheme_filter_subcategory_query' );
-function mytheme_filter_subcategory_query( $q ) {
-
-    if ( is_admin() || ! is_tax( 'product_cat' ) ) {
-        return;
-    }
-
-    $meta_query   = $q->get( 'meta_query' );
-    $meta_query[] = [
-        'key'     => '_stock_status',
-        'value'   => 'instock',
-        'compare' => '=',
-    ];
-    $q->set( 'meta_query', $meta_query );
-}
-
-/* ──────────────────────────
- 7. (УБРАН) Обработка сохранения объявления — теперь в dashboard-functions.php
+ 6. (УБРАН) Обработка сохранения объявления — теперь в dashboard-functions.php
 ───────────────────────────────────── */
 
 /* ──────────────────────────
@@ -221,21 +202,6 @@ function mytheme_auto_promote_admin() {
     }
 }
 
-/* ──────────────────────────
- 9a. Product category archives: exclude child categories
-───────────────────────────────────── */
-add_action( 'pre_get_posts', 'mytheme_exclude_child_products' );
-function mytheme_exclude_child_products( $query ) {
-    if ( ! is_admin() && $query->is_main_query() && $query->is_tax( 'product_cat' ) ) {
-        $tax_query = (array) $query->get( 'tax_query' );
-        foreach ( $tax_query as &$tax ) {
-            if ( isset( $tax['taxonomy'] ) && 'product_cat' === $tax['taxonomy'] ) {
-                $tax['include_children'] = false;
-            }
-        }
-        $query->set( 'tax_query', $tax_query );
-    }
-}
 
 /* ──────────────────────────
 10. AJAX: утверждение постов из админ-панели
