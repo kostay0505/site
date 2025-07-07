@@ -173,35 +173,35 @@ $section = isset( $_GET['section'] )
   else :
 
     // --- Категории / подкатегории ---
-    $term = get_term_by( 'slug', $section, 'product_cat' );
-    if ( $term && ! is_wp_error( $term ) ) :
-      $children = get_terms( [
-        'taxonomy'   => 'product_cat',
-        'parent'     => $term->term_id,
-        'hide_empty' => false,
-      ] );
-
-      if ( ! empty( $children ) ) : ?>
-        <h1 class="subcategory-title"><?php echo esc_html( $term->name ); ?></h1>
+    global $mytheme_categories;
+    if ( isset( $mytheme_categories[ $section ] ) ) :
+      $cat = $mytheme_categories[ $section ]; ?>
+        <h1 class="subcategory-title"><?php echo esc_html( $cat['label'] ); ?></h1>
         <div class="catalog-grid">
-          <?php foreach ( $children as $child ) : ?>
-            <a href="<?php echo esc_url( add_query_arg( 'section', $child->slug, get_permalink() ) ); ?>"
+          <?php foreach ( $cat['children'] as $sub_slug => $sub_name ) : ?>
+            <a href="<?php echo esc_url( add_query_arg( 'section', $sub_slug, get_permalink() ) ); ?>"
                class="catalog-item">
-              <?php echo esc_html( $child->name ); ?>
+              <?php echo esc_html( $sub_name ); ?>
             </a>
           <?php endforeach; ?>
         </div>
       <?php
-      else :
-        // Последний уровень: вывод товаров текущей категории
-        get_template_part( 'inc/catalog/catalog-section', null, [
-          'term'    => $term,
-          'section' => $section,
-        ] );
-      endif;
-
     else :
-      echo '<p>' . esc_html__( 'Секция не указана или категория не найдена.', 'my-custom-theme' ) . '</p>';
+      $sub_title = '';
+      foreach ( $mytheme_categories as $cat_info ) {
+        if ( isset( $cat_info['children'][ $section ] ) ) {
+          $sub_title = $cat_info['children'][ $section ];
+          break;
+        }
+      }
+      if ( $sub_title ) :
+        get_template_part( 'inc/catalog/catalog-section', null, [
+          'slug'  => $section,
+          'title' => $sub_title,
+        ] );
+      else :
+        echo '<p>' . esc_html__( 'Секция не указана или категория не найдена.', 'my-custom-theme' ) . '</p>';
+      endif;
     endif;
 
   endif; // if dashboard / else ?>

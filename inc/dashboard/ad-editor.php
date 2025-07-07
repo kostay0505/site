@@ -20,22 +20,8 @@ $desc        = $is_edit ? $post->post_content : '';
 $price       = $is_edit ? get_post_meta( $post_id, '_price', true ) : '';
 $currency    = $is_edit ? get_post_meta( $post_id, '_currency', true ) : '';
 $cond        = $is_edit ? get_post_meta( $post_id, '_condition', true ) : 'new';
-$cat_terms   = $is_edit
-  ? wp_get_post_terms( $post_id, 'product_cat', [ 'fields' => 'ids' ] )
-  : [];
-$cat_id    = 0;
-$subcat_id = 0;
-if ( ! empty( $cat_terms ) ) {
-  $term = get_term( $cat_terms[0], 'product_cat' );
-  if ( $term && ! is_wp_error( $term ) ) {
-    if ( $term->parent ) {
-      $cat_id    = $term->parent;
-      $subcat_id = $term->term_id;
-    } else {
-      $cat_id = $term->term_id;
-    }
-  }
-}
+$cat_slug    = $is_edit ? get_post_meta( $post_id, '_ad_category', true ) : '';
+$subcat_slug = $is_edit ? get_post_meta( $post_id, '_ad_subcategory', true ) : '';
 $gallery_ids = $is_edit
   ? array_filter( array_map( 'absint',
       explode( ',', get_post_meta( $post_id, '_product_image_gallery', true ) )
@@ -48,14 +34,8 @@ $country     = $is_edit ? get_post_meta( $post_id, '_country', true ) : '';
 $city        = $is_edit ? get_post_meta( $post_id, '_city', true ) : '';
 
 // Категории верхнего уровня, доступные для выбора
-$allowed_slugs = [ 'audio', 'lightning', 'visual', 'rigging', 'staging' ];
-$allowed_cats  = [];
-foreach ( $allowed_slugs as $slug ) {
-  $term = get_term_by( 'slug', $slug, 'product_cat' );
-  if ( $term && ! is_wp_error( $term ) ) {
-    $allowed_cats[] = $term;
-  }
-}
+global $mytheme_categories;
+$allowed_cats = $mytheme_categories;
 ?>
 
 <h2 class="ad-editor-title">
@@ -91,22 +71,22 @@ foreach ( $allowed_slugs as $slug ) {
       <label for="ad_cat"><?php esc_html_e( 'Категория','my-custom-theme' ); ?></label>
       <select name="ad_cat" id="ad_cat" class="form-control">
         <option value=""><?php esc_html_e( 'Выберите…','my-custom-theme' ); ?></option>
-        <?php foreach ( $allowed_cats as $cat ) : ?>
-          <option value="<?php echo esc_attr( $cat->term_id ); ?>" <?php selected( $cat_id, $cat->term_id ); ?>>
-            <?php echo esc_html( $cat->name ); ?>
+        <?php foreach ( $allowed_cats as $slug => $cat ) : ?>
+          <option value="<?php echo esc_attr( $slug ); ?>" <?php selected( $cat_slug, $slug ); ?>>
+            <?php echo esc_html( $cat['label'] ); ?>
           </option>
         <?php endforeach; ?>
       </select>
     </div>
 
     <!-- Подкатегория -->
-    <div class="form-row" id="subcat-row" style="<?php echo $subcat_id ? '' : 'display:none;'; ?>">
+    <div class="form-row" id="subcat-row" style="<?php echo $subcat_slug ? '' : 'display:none;'; ?>">
       <label for="ad_subcat"><?php esc_html_e( 'Подкатегория', 'my-custom-theme' ); ?></label>
-      <select name="ad_subcat" id="ad_subcat" class="form-control" data-selected="<?php echo esc_attr( $subcat_id ); ?>">
+      <select name="ad_subcat" id="ad_subcat" class="form-control" data-selected="<?php echo esc_attr( $subcat_slug ); ?>">
         <option value=""><?php esc_html_e( 'Выберите…','my-custom-theme' ); ?></option>
-        <?php if ( $subcat_id ) : ?>
-          <?php foreach ( get_terms( [ 'taxonomy' => 'product_cat', 'parent' => $cat_id, 'hide_empty' => false ] ) as $child ) : ?>
-            <option value="<?php echo esc_attr( $child->term_id ); ?>" <?php selected( $subcat_id, $child->term_id ); ?>><?php echo esc_html( $child->name ); ?></option>
+        <?php if ( $subcat_slug && isset( $allowed_cats[ $cat_slug ]['children'] ) ) : ?>
+          <?php foreach ( $allowed_cats[ $cat_slug ]['children'] as $s_slug => $s_name ) : ?>
+            <option value="<?php echo esc_attr( $s_slug ); ?>" <?php selected( $subcat_slug, $s_slug ); ?>><?php echo esc_html( $s_name ); ?></option>
           <?php endforeach; ?>
         <?php endif; ?>
       </select>
