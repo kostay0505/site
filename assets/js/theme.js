@@ -50,7 +50,7 @@
         }
         timer = setTimeout(() => {
           fetch(
-            `${window.location.origin}/wp-json/wp/v2/product?search=${encodeURIComponent(term)}&per_page=5`
+            `${MyTheme.rest_root}wp/v2/product?search=${encodeURIComponent(term)}&per_page=5`
           )
           .then(res => res.json())
           .then(data => {
@@ -203,28 +203,32 @@ $(document).on('click', '.order-delete', function(e) {
     const subcatRow    = document.getElementById('subcat-row');
     const subcatSelect = document.getElementById('ad_subcat');
 
-    function loadSubcats(catId, selected){
+    function loadSubcats(catSlug, selected){
         if(!catSelect || !subcatSelect || !subcatRow) return;
         subcatSelect.innerHTML = '<option value="">Выберите…</option>';
-        if(!catId){
+        if(!catSlug || !MyTheme.categories[catSlug]){
             subcatRow.style.display = 'none';
+            subcatSelect.disabled = true;
             return;
         }
-        fetch(`${window.location.origin}/wp-json/wp/v2/product_cat?parent=${catId}&per_page=100`)
-            .then(r=>r.json())
-            .then(data=>{
-                if(Array.isArray(data) && data.length){
-                    subcatSelect.innerHTML = '<option value="">Выберите…</option>' +
-                        data.map(t=>`<option value="${t.id}" ${selected==t.id?'selected':''}>${t.name}</option>`).join('');
-                    subcatRow.style.display = '';
-                }else{
-                    subcatRow.style.display = 'none';
-                }
-            });
+
+        const subs = MyTheme.categories[catSlug].children || {};
+        const opts = Object.keys(subs)
+            .map(slug => `<option value="${slug}" ${selected===slug?'selected':''}>${subs[slug]}</option>`)
+            .join('');
+
+        if(opts){
+            subcatSelect.innerHTML = '<option value="">Выберите…</option>' + opts;
+            subcatRow.style.display = '';
+            subcatSelect.disabled = false;
+        } else {
+            subcatRow.style.display = 'none';
+            subcatSelect.disabled = true;
+        }
     }
 
     if(catSelect && subcatSelect && subcatRow){
-        catSelect.addEventListener('change', ()=>loadSubcats(parseInt(catSelect.value,10)||0));
-        loadSubcats(parseInt(catSelect.value,10)||0, parseInt(subcatSelect.dataset.selected||0,10));
+        catSelect.addEventListener('change', ()=>loadSubcats(catSelect.value));
+        loadSubcats(catSelect.value || '', subcatSelect.dataset.selected || '');
     }
 });
