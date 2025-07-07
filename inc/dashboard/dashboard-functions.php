@@ -56,13 +56,10 @@ function mytheme_handle_save_ad() {
     update_post_meta( $post_id, '_city',      sanitize_text_field( $_POST['ad_city']     ?? '' ) );
 
     // 5) Категория и подкатегория
-    $cat_term    = absint( $_POST['ad_cat']     ?? 0 );
-    $subcat_term = absint( $_POST['ad_subcat']  ?? 0 );
-    if ( $subcat_term ) {
-        wp_set_post_terms( $post_id, [ $subcat_term ], 'product_cat' );
-    } elseif ( $cat_term ) {
-        wp_set_post_terms( $post_id, [ $cat_term ], 'product_cat' );
-    }
+    $cat_slug    = sanitize_key( $_POST['ad_cat']    ?? '' );
+    $subcat_slug = sanitize_key( $_POST['ad_subcat'] ?? '' );
+    update_post_meta( $post_id, '_ad_category',    $cat_slug );
+    update_post_meta( $post_id, '_ad_subcategory', $subcat_slug );
 
     // 6) Собираем существующую галерею
     $existing = array_filter( array_map( 'absint',
