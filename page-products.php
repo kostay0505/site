@@ -200,15 +200,7 @@ $section = isset( $_GET['section'] )
           'title' => $sub_title,
         ] );
       else :
-        $term = get_term_by( 'slug', $section, 'product_cat' );
-        if ( $term && ! is_wp_error( $term ) ) {
-          get_template_part( 'inc/catalog/catalog-section', null, [
-            'slug'  => $section,
-            'title' => $term->name,
-          ] );
-        } else {
-          echo '<p>' . esc_html__( 'Секция не указана или категория не найдена.', 'my-custom-theme' ) . '</p>';
-        }
+        echo '<p>' . esc_html__( 'Секция не указана или категория не найдена.', 'my-custom-theme' ) . '</p>';
       endif;
     endif;
 
