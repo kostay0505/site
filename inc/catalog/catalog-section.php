@@ -3,12 +3,12 @@
  * Универсальный вывод товаров любой подкатегории WooCommerce
  * Подключается из page-products.php через get_template_part
  * Получает переменные:
- *   $term    – объект терма product_cat
- *   $section – его slug
+ *   $slug  – subcategory slug
+ *   $title – display name of the subcategory
  * @package my-custom-theme
  */
 
-if ( ! isset( $term ) || is_wp_error( $term ) ) {
+if ( empty( $slug ) || empty( $title ) ) {
     return;
 }
 
@@ -25,12 +25,10 @@ $args = array(
     'orderby'        => $current_orderby,
     'order'          => $order,
     'paged'          => $paged,
-    'tax_query'      => array(
+    'meta_query'     => array(
         array(
-            'taxonomy'       => 'product_cat',
-            'field'          => 'term_id',
-            'terms'          => $term->term_id,
-            'include_children' => false,
+            'key'   => '_ad_subcategory',
+            'value' => $slug,
         ),
     ),
 );
@@ -44,12 +42,12 @@ if ( isset( $_GET['used_only'] ) ) {
 $products = new WP_Query( $args );
 ?>
 
-<h1 class="subcategory-title"><?php echo esc_html( $term->name ); ?></h1>
+<h1 class="subcategory-title"><?php echo esc_html( $title ); ?></h1>
 
 <!-- Форма фильтра -->
 <div class="filter-box">
   <form class="subcategory-filter" method="get">
-    <input type="hidden" name="section" value="<?php echo esc_attr( $section ); ?>">
+    <input type="hidden" name="section" value="<?php echo esc_attr( $slug ); ?>">
 
     <!-- Поисковая строка -->
     <div class="filter-search">
