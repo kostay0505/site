@@ -203,6 +203,8 @@ $(document).on('click', '.order-delete', function(e) {
     const subcatRow    = document.getElementById('subcat-row');
     const subcatSelect = document.getElementById('ad_subcat');
 
+    const restUrl = `${window.location.origin}/wp-json/wp/v2/product_cat`;
+
     function loadSubcats(catId, selected){
         if(!catSelect || !subcatSelect || !subcatRow) return;
         subcatSelect.innerHTML = '<option value="">Выберите…</option>';
@@ -210,16 +212,19 @@ $(document).on('click', '.order-delete', function(e) {
             subcatRow.style.display = 'none';
             return;
         }
-        fetch(`${window.location.origin}/wp-json/wp/v2/product_cat?parent=${catId}&per_page=100`)
-            .then(r=>r.json())
-            .then(data=>{
-                if(Array.isArray(data) && data.length){
+        fetch(`${restUrl}?parent=${catId}&per_page=100`)
+            .then(r => r.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length) {
                     subcatSelect.innerHTML = '<option value="">Выберите…</option>' +
-                        data.map(t=>`<option value="${t.id}" ${selected==t.id?'selected':''}>${t.name}</option>`).join('');
+                        data.map(t => `<option value="${t.id}" ${selected==t.id?'selected':''}>${t.name}</option>`).join('');
                     subcatRow.style.display = '';
-                }else{
+                } else {
                     subcatRow.style.display = 'none';
                 }
+            })
+            .catch(() => {
+                subcatRow.style.display = 'none';
             });
     }
 
