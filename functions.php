@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once get_template_directory() . '/inc/roles.php';
 require_once get_template_directory() . '/inc/dashboard/dashboard-functions.php';
 require_once get_template_directory() . '/inc/profile-fields.php';
+require_once get_template_directory() . '/inc/categories.php';
 
 /* ──────────────────────────
  2. Базовая настройка темы
@@ -48,6 +49,14 @@ function mytheme_enqueue_assets() {
     /* основные скрипты */
     wp_enqueue_script( 'splide-js',  get_template_directory_uri() . '/assets/libs/splide/splide.min.js', [], '4.1.3', true );
     wp_enqueue_script( 'mytheme-js', get_template_directory_uri() . '/assets/js/theme.js', [ 'splide-js' ], '1.1', true );
+    wp_localize_script(
+        'mytheme-js',
+        'MyTheme',
+        [
+            'rest_root'  => esc_url_raw( rest_url() ),
+            'categories' => $GLOBALS['mytheme_categories'],
+        ]
+    );
 
     /* AJAX-скрипт избранного */
     wp_enqueue_script(
